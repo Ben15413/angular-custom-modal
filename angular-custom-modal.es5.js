@@ -12,6 +12,8 @@ var ModalComponent = (function () {
         this.closeOnOutsideClick = true;
         this.visible = false;
         this.visibleAnimate = false;
+        this.visibleAnimate2 = false;
+        this.visibleAnimate3 = false;
     }
     /**
      * @return {?}
@@ -28,6 +30,8 @@ var ModalComponent = (function () {
         var _this = this;
         document.body.classList.add('modal-open');
         this.visible = true;
+        this.visibleAnimate2 = false;
+        this.visibleAnimate3 = false;
         setTimeout(function () {
             _this.visibleAnimate = true;
         });
@@ -37,12 +41,19 @@ var ModalComponent = (function () {
      */
     ModalComponent.prototype.close = function () {
         var _this = this;
-        document.body.classList.remove('modal-open');
-        this.visibleAnimate = false;
+
         setTimeout(function () {
+            _this.visibleAnimate3 = true;
+            _this.visibleAnimate2 = true;
+        })
+
+        setTimeout(function () {
+            document.body.classList.remove('modal-open');
+            this.visibleAnimate = false;
             _this.visible = false;
+            console.log("hola 1");
             _this.changeDetectorRef.markForCheck();
-        }, 200);
+        }, 2000);
     };
     /**
      * @param {?} event
@@ -73,19 +84,23 @@ var ModalComponent = (function () {
     return ModalComponent;
 }());
 ModalComponent.decorators = [
-    { type: Component, args: [{
-                selector: 'modal',
-                template: "\n    <div \n      class=\"modal fade\"\n      role=\"dialog\"\n      tabindex=\"-1\"\n      [class.in]=\"visibleAnimate\"\n      *ngIf=\"visible\">\n      <div class=\"modal-dialog\">\n        <div class=\"modal-content\">\n          <div class=\"modal-header\">\n            <ng-container *ngTemplateOutlet=\"header\"></ng-container>\n            <button class=\"close\" data-dismiss=\"modal\" type=\"button\" aria-label=\"Close\" (click)=\"close()\">\u00D7</button>\n          </div>\n          <div class=\"modal-body\">\n            <ng-container *ngTemplateOutlet=\"body\"></ng-container>\n          </div>\n          <div class=\"modal-footer\">\n            <ng-container *ngTemplateOutlet=\"footer\"></ng-container>\n          </div>\n        </div>\n      </div>\n    </div>\n  ",
-                styles: ["\n    /**\n     * A more specific selector overwrites bootstrap display properties, but they still enable users\n     * to overwite them on their apps.\n     */\n    /deep/ modal .modal {\n      display: -webkit-box;\n      display: -ms-flexbox;\n      display: flex;\n      -webkit-box-flex: 1;\n          -ms-flex: 1;\n              flex: 1;\n      -webkit-box-align: center;\n          -ms-flex-align: center;\n              align-items: center;\n      -webkit-box-pack: center;\n          -ms-flex-pack: center;\n              justify-content: center; }\n\n    /deep/ .modal {\n      position: fixed;\n      top: 0;\n      left: 0;\n      width: 100%;\n      min-height: 100%;\n      background-color: rgba(0, 0, 0, 0.15);\n      z-index: 42; }\n\n    /deep/ .modal.in {\n      opacity: 1; }\n  "],
-            },] },
+    {
+        type: Component, args: [{
+            selector: 'modal',
+            template: "\n    <div \n      class=\"modal fade\"\n      role=\"dialog\"\n      tabindex=\"-1\"\n      [class.in]=\"visibleAnimate\"\n      *ngIf=\"visible\">\n      <div class=\"modal-dialog\">\n        <div class=\"modal-content\" [class.out]=\"visibleAnimate2\" >\n          <div class=\"modal-header\">\n            <ng-container *ngTemplateOutlet=\"header\"></ng-container>\n            <button class=\"close\" data-dismiss=\"modal\" type=\"button\" aria-label=\"Close\" (click)=\"close()\">\u00D7</button>\n          </div>\n          <div class=\"modal-body\" [class.ocultar]=\"visibleAnimate3\">\n            <ng-container *ngTemplateOutlet=\"body\"></ng-container>\n          </div>\n          <div class=\"modal-footer\">\n            <ng-container *ngTemplateOutlet=\"footer\"></ng-container>\n          </div>\n        </div>\n      </div>\n    </div>\n  ",
+            styles: ["\n    /**\n     * A more specific selector overwrites bootstrap display properties, but they still enable users\n     * to overwite them on their apps.\n     */\n    /deep/ modal .modal {\n      display: -webkit-box;\n      display: -ms-flexbox;\n      display: flex;\n      -webkit-box-flex: 1;\n          -ms-flex: 1;\n              flex: 1;\n      -webkit-box-align: center;\n          -ms-flex-align: center;\n              align-items: center;\n      -webkit-box-pack: center;\n          -ms-flex-pack: center;\n              justify-content: center; }\n\n    /deep/ .modal {\n      position: fixed;\n      top: 0;\n      left: 0;\n      width: 100%;\n      min-height: 100%;\n      background-color: rgba(0, 0, 0, 0.15);\n      z-index: 42; }\n\n    /deep/ .modal.in {\n      opacity: 1; }\n\n    /deep/ .modal-content.out {\n      animation-name: ocultarModal;animation-duration: 3s; }\n\n    /deep/ .modal-body.ocultar {\n      animation-name: ocultarInfoClose;animation-duration: 4s; }\n"],
+        },]
+    },
 ];
 /**
  * @nocollapse
  */
-ModalComponent.ctorParameters = function () { return [
-    { type: ElementRef, },
-    { type: ChangeDetectorRef, },
-]; };
+ModalComponent.ctorParameters = function () {
+    return [
+        { type: ElementRef, },
+        { type: ChangeDetectorRef, },
+    ];
+};
 ModalComponent.propDecorators = {
     'header': [{ type: ContentChild, args: ['modalHeader',] },],
     'body': [{ type: ContentChild, args: ['modalBody',] },],
@@ -100,14 +115,16 @@ var ModalModule = (function () {
     return ModalModule;
 }());
 ModalModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [
-                    CommonModule,
-                ],
-                exports: [ModalComponent],
-                declarations: [ModalComponent],
-                providers: [],
-            },] },
+    {
+        type: NgModule, args: [{
+            imports: [
+                CommonModule,
+            ],
+            exports: [ModalComponent],
+            declarations: [ModalComponent],
+            providers: [],
+        },]
+    },
 ];
 /**
  * @nocollapse
