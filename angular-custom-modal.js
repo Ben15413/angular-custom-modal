@@ -1,141 +1,106 @@
 import { ChangeDetectorRef, Component, ContentChild, ElementRef, HostListener, Input, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 /* tslint:disable:component-selector */
-class ModalComponent {
+var ModalComponent = (function () {
     /**
      * @param {?} elementRef
      * @param {?} changeDetectorRef
      */
-    constructor(elementRef, changeDetectorRef) {
+    function ModalComponent(elementRef, changeDetectorRef) {
         this.elementRef = elementRef;
         this.changeDetectorRef = changeDetectorRef;
         this.closeOnOutsideClick = true;
         this.visible = false;
         this.visibleAnimate = false;
+        this.visibleAnimate2 = false;
+        this.visibleAnimate3 = false;
     }
     /**
      * @return {?}
      */
-    ngOnDestroy() {
+    ModalComponent.prototype.ngOnDestroy = function () {
         // Prevent modal from not executing its closing actions if the user navigated away (for example,
         // through a link).
         this.close();
-    }
+    };
     /**
      * @return {?}
      */
-    open() {
+    ModalComponent.prototype.open = function () {
+        var _this = this;
         document.body.classList.add('modal-open');
         this.visible = true;
-        setTimeout(() => {
-            this.visibleAnimate = true;
+        this.visibleAnimate2 = false;
+        this.visibleAnimate3 = false;
+        setTimeout(function () {
+            _this.visibleAnimate = true;
         });
-    }
+    };
     /**
      * @return {?}
      */
-    close() {
-        document.body.classList.remove('modal-open');
-        this.visibleAnimate = false;
-        setTimeout(() => {
-            this.visible = false;
-            this.changeDetectorRef.markForCheck();
-        }, 200);
-    }
+    ModalComponent.prototype.close = function () {
+        var _this = this;
+
+        setTimeout(function () {
+            _this.visibleAnimate3 = true;
+            _this.visibleAnimate2 = true;
+        })
+
+        setTimeout(function () {
+            document.body.classList.remove('modal-open');
+            this.visibleAnimate = false;
+            _this.visible = false;
+            console.log("hola 1");
+            _this.changeDetectorRef.markForCheck();
+        }, 2000);
+    };
     /**
      * @param {?} event
      * @return {?}
      */
-    onContainerClicked(event) {
+    ModalComponent.prototype.onContainerClicked = function (event) {
         if (((event.target)).classList.contains('modal') && this.isTopMost() && this.closeOnOutsideClick) {
             this.close();
         }
-    }
+    };
     /**
      * @param {?} event
      * @return {?}
      */
-    onKeyDownHandler(event) {
+    ModalComponent.prototype.onKeyDownHandler = function (event) {
         // If ESC key and TOP MOST modal, close it.
         if (event.key === 'Escape' && this.isTopMost()) {
             this.close();
         }
-    }
+    };
     /**
      * Returns true if this modal is the top most modal.
      * @return {?}
      */
-    isTopMost() {
+    ModalComponent.prototype.isTopMost = function () {
         return !this.elementRef.nativeElement.querySelector(':scope modal > .modal');
-    }
-}
+    };
+    return ModalComponent;
+}());
 ModalComponent.decorators = [
-    { type: Component, args: [{
-                selector: 'modal',
-                template: `
-    <div 
-      class="modal fade"
-      role="dialog"
-      tabindex="-1"
-      [class.in]="visibleAnimate"
-      *ngIf="visible">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <ng-container *ngTemplateOutlet="header"></ng-container>
-            <button class="close" data-dismiss="modal" type="button" aria-label="Close" (click)="close()">×</button>
-          </div>
-          <div class="modal-body">
-            <ng-container *ngTemplateOutlet="body"></ng-container>
-          </div>
-          <div class="modal-footer">
-            <ng-container *ngTemplateOutlet="footer"></ng-container>
-          </div>
-        </div>
-      </div>
-    </div>
-  `,
-                styles: [`
-    /**
-     * A more specific selector overwrites bootstrap display properties, but they still enable users
-     * to overwite them on their apps.
-     */
-    /deep/ modal .modal {
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-flex: 1;
-          -ms-flex: 1;
-              flex: 1;
-      -webkit-box-align: center;
-          -ms-flex-align: center;
-              align-items: center;
-      -webkit-box-pack: center;
-          -ms-flex-pack: center;
-              justify-content: center; }
-
-    /deep/ .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      min-height: 100%;
-      background-color: rgba(0, 0, 0, 0.15);
-      z-index: 42; }
-
-    /deep/ .modal.in {
-      opacity: 1; }
-  `],
-            },] },
+    {
+        type: Component, args: [{
+            selector: 'modal',
+            template: "\n    <div \n      class=\"modal fade\"\n      role=\"dialog\"\n      tabindex=\"-1\"\n      [class.in]=\"visibleAnimate\"\n      *ngIf=\"visible\">\n      <div class=\"modal-dialog\">\n        <div class=\"modal-content\" [class.out]=\"visibleAnimate2\" >\n          <div class=\"modal-header\">\n            <ng-container *ngTemplateOutlet=\"header\"></ng-container>\n            <button class=\"close\" data-dismiss=\"modal\" type=\"button\" aria-label=\"Close\" (click)=\"close()\">\u00D7</button>\n          </div>\n          <div class=\"modal-body\" [class.ocultar]=\"visibleAnimate3\">\n            <ng-container *ngTemplateOutlet=\"body\"></ng-container>\n          </div>\n          <div class=\"modal-footer\">\n            <ng-container *ngTemplateOutlet=\"footer\"></ng-container>\n          </div>\n        </div>\n      </div>\n    </div>\n  ",
+            styles: ["\n    /**\n     * A more specific selector overwrites bootstrap display properties, but they still enable users\n     * to overwite them on their apps.\n     */\n    /deep/ modal .modal {\n      display: -webkit-box;\n      display: -ms-flexbox;\n      display: flex;\n      -webkit-box-flex: 1;\n          -ms-flex: 1;\n              flex: 1;\n      -webkit-box-align: center;\n          -ms-flex-align: center;\n              align-items: center;\n      -webkit-box-pack: center;\n          -ms-flex-pack: center;\n              justify-content: center; }\n\n    /deep/ .modal {\n      position: fixed;\n      top: 0;\n      left: 0;\n      width: 100%;\n      min-height: 100%;\n      background-color: rgba(0, 0, 0, 0.15);\n      z-index: 42; }\n\n    /deep/ .modal.in {\n      opacity: 1; }\n\n    /deep/ .modal-content.out {\n      animation-name: ocultarModal;animation-duration: 3s; }\n\n    /deep/ .modal-body.ocultar {\n      animation-name: ocultarInfoClose;animation-duration: 4s; }\n"],
+        },]
+    },
 ];
 /**
  * @nocollapse
  */
-ModalComponent.ctorParameters = () => [
-    { type: ElementRef, },
-    { type: ChangeDetectorRef, },
-];
+ModalComponent.ctorParameters = function () {
+    return [
+        { type: ElementRef, },
+        { type: ChangeDetectorRef, },
+    ];
+};
 ModalComponent.propDecorators = {
     'header': [{ type: ContentChild, args: ['modalHeader',] },],
     'body': [{ type: ContentChild, args: ['modalBody',] },],
@@ -144,27 +109,30 @@ ModalComponent.propDecorators = {
     'onContainerClicked': [{ type: HostListener, args: ['click', ['$event'],] },],
     'onKeyDownHandler': [{ type: HostListener, args: ['document:keydown', ['$event'],] },],
 };
-
-class ModalModule {
-}
+var ModalModule = (function () {
+    function ModalModule() {
+    }
+    return ModalModule;
+}());
 ModalModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [
-                    CommonModule,
-                ],
-                exports: [ModalComponent],
-                declarations: [ModalComponent],
-                providers: [],
-            },] },
+    {
+        type: NgModule, args: [{
+            imports: [
+                CommonModule,
+            ],
+            exports: [ModalComponent],
+            declarations: [ModalComponent],
+            providers: [],
+        },]
+    },
 ];
 /**
  * @nocollapse
  */
-ModalModule.ctorParameters = () => [];
-
+ModalModule.ctorParameters = function () { return []; };
 /**
  * Generated bundle index. Do not edit.
  */
-
 export { ModalComponent, ModalModule };
-//# sourceMappingURL=angular-custom-modal.js.map
+//# sourceMappingURL=angular-custom-modal.es5.js.map
+
