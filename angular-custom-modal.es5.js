@@ -130,7 +130,8 @@ ModalComponent.decorators = [
       z-index: 42; }
 
     /deep/ .modal.in {
-      opacity: 1; }
+      opacity: 1;
+      z-index: 1001; }
   `],
             },] },
 ];
